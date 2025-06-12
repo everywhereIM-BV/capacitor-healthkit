@@ -14,7 +14,7 @@
     "@capacitor/core": "latest",
     "@capacitor/camera": "latest",
     "@capacitor/splash-screen": "latest",
-    "@perfood/capacitor-healthkit": "file:.."
+    "@everywhereIM-BV/capacitor-healthkit": "file:.."
   },
   "devDependencies": {
     "@capacitor/cli": "latest"

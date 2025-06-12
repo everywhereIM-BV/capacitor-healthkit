@@ -76,6 +76,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
         case "bloodPressureDiastolic":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
+        case "headphoneAudioExposure":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.headphoneAudioExposure)!
         default:
             return nil
         }
@@ -122,6 +124,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!)
             case "bloodPressureDiastolic":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!)
+            case "headphoneAudioExposure":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.headphoneAudioExposure)!)
             default:
                 print("no match in case: " + item)
             }
@@ -451,6 +455,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 } else if sample.quantityType.is(compatibleWith: HKUnit.millimeterOfMercury()) {
                     unit = HKUnit.millimeterOfMercury()
                     unitName = "mmHg"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.decibelAWeightedSoundPressureLevel()) {
+                    unit = HKUnit.decibelAWeightedSoundPressureLevel()
+                    unitName = "dBHL"
                 } else {
                     print("Error: unknown unit type")
                 }

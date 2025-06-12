@@ -10,12 +10,12 @@ Disclaimer : _for now only some of the HK data base, in the future the retrieve 
 
 ### Prerequisites
 
-* Add **HealthKit to your Xcode project** (section signing & capabilities)
+- Add **HealthKit to your Xcode project** (section signing & capabilities)
 
 ![alt text](https://i.ibb.co/Bg03ZKf/auth-hk.png)
 
-* ADD **Privacy - Health Share Usage Description** to your Xcode project
-* ADD **Privacy - Health Update Usage Description** to your Xcode project
+- ADD **Privacy - Health Share Usage Description** to your Xcode project
+- ADD **Privacy - Health Update Usage Description** to your Xcode project
 
 You can simply put this into the `info.plist` file
 
@@ -31,7 +31,7 @@ You can simply put this into the `info.plist` file
 Do
 
 ```
-npm i --save @perfood/capacitor-healthkit
+npm i --save @everywhereIM-BV/capacitor-healthkit
 ```
 
 Then
@@ -40,7 +40,7 @@ Then
 npx cap update
 ```
 
-And  **if you use Ionic or Angular, here a example setup:**
+And **if you use Ionic or Angular, here a example setup:**
 
 in your .ts file add this:
 
@@ -52,7 +52,7 @@ import {
   QueryOutput,
   SampleNames,
   SleepData,
-} from '@perfood/capacitor-healthkit';
+} from '@everywhereIM-BV/capacitor-healthkit';
 
 const READ_PERMISSIONS = ['calories', 'stairs', 'activity', 'steps', 'distance', 'duration', 'weight'];
 
@@ -199,8 +199,8 @@ multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery) => Promise<void>
 
 Checks if there is writing permission for multiple sample types. This function has not been tested.
 
-| Param              | Type                                                                  | Description                                                                |
-| ------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Param              | Type                                                                  | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | **`queryOptions`** | <code><a href="#multipleeditionquery">MultipleEditionQuery</a></code> | defines the sampletypes for which you need to check for writing permission. |
 
 --------------------
@@ -261,17 +261,16 @@ This is used for checking writing permissions.
 
 This is used for checking writing permissions.
 
-| Prop              | Type                   |
-| ----------------- | ---------------------- |
+| Prop              | Type                  |
+| ----------------- | --------------------- |
 | **`sampleNames`** | <code>string[]</code> |
 
 </docgen-api>
 
-
 ## Credits
 
-* Theo Creach (original author) - [Twitter](https://twitter.com/crcht)
-* Timothée Bilodeau - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
+- Theo Creach (original author) - [Twitter](https://twitter.com/crcht)
+- Timothée Bilodeau - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
 
 ## License
 
