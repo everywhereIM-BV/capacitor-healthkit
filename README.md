@@ -104,12 +104,14 @@ And you're all set ! :+1:
 <docgen-index>
 
 * [`requestAuthorization(...)`](#requestauthorization)
-* [`queryHKitSampleType(...)`](#queryhkitsampletype)
 * [`isAvailable()`](#isavailable)
+* [`queryHKitSampleType(...)`](#queryhkitsampletype)
 * [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
+* [`queryHKitSampleTypeStatisticsCollection(...)`](#queryhkitsampletypestatisticscollection)
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
 * [`multipleIsEditionAuthorized(...)`](#multipleiseditionauthorized)
 * [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -131,6 +133,17 @@ This functions will open the iOS Screen to let users choose their permissions. K
 --------------------
 
 
+### isAvailable()
+
+```typescript
+isAvailable() => Promise<void>
+```
+
+This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
+
+--------------------
+
+
 ### queryHKitSampleType(...)
 
 ```typescript
@@ -148,17 +161,6 @@ This defines a query to the Healthkit for a single type of data.
 --------------------
 
 
-### isAvailable()
-
-```typescript
-isAvailable() => Promise<void>
-```
-
-This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
-
---------------------
-
-
 ### multipleQueryHKitSampleType(...)
 
 ```typescript
@@ -172,6 +174,23 @@ This defines a query to the Healthkit for a single type of data. This function h
 | **`queryOptions`** | <code><a href="#multiplequeryoptions">MultipleQueryOptions</a></code> | defines the sample types which can be queried for |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### queryHKitSampleTypeStatisticsCollection(...)
+
+```typescript
+queryHKitSampleTypeStatisticsCollection<T>(queryOptions: Omit<SingleQueryOptions, "limit">) => Promise<QueryOutput<T>>
+```
+
+This defines a query to the Healthkit for a single type of data.
+
+| Param              | Type                                                                                                       | Description                                                                                                            |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **`queryOptions`** | <code><a href="#omit">Omit</a>&lt;<a href="#singlequeryoptions">SingleQueryOptions</a>, 'limit'&gt;</code> | defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results. |
+
+**Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;T&gt;&gt;</code>
 
 --------------------
 
@@ -264,6 +283,30 @@ This is used for checking writing permissions.
 | Prop              | Type                  |
 | ----------------- | --------------------- |
 | **`sampleNames`** | <code>string[]</code> |
+
+
+### Type Aliases
+
+
+#### Omit
+
+Construct a type with the properties of T except for those in type K.
+
+<code><a href="#pick">Pick</a>&lt;T, <a href="#exclude">Exclude</a>&lt;keyof T, K&gt;&gt;</code>
+
+
+#### Pick
+
+From T, pick a set of properties whose keys are in the union K
+
+<code>{ [P in K]: T[P]; }</code>
+
+
+#### Exclude
+
+<a href="#exclude">Exclude</a> from T those types that are assignable to U
+
+<code>T extends U ? never : T</code>
 
 </docgen-api>
 

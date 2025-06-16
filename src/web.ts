@@ -32,6 +32,12 @@ export class CapacitorHealthkitWeb
     throw this.unimplemented('Not implemented on web.');
   }
 
+  async queryHKitSampleTypeStatisticsCollection(
+    _queryOptions: Omit<SingleQueryOptions, 'limit'>,
+  ): Promise<any> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
   async isEditionAuthorized(_queryOptions: EditionQuery): Promise<void> {
     throw this.unimplemented('Not implemented on web.');
   }
