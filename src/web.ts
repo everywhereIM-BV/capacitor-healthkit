@@ -7,6 +7,7 @@ import type {
   CapacitorHealthkitPlugin,
   MultipleQueryOptions,
   SingleQueryOptions,
+  StatisticsCollectionQueryOptions,
 } from './definitions';
 
 export class CapacitorHealthkitWeb
@@ -33,7 +34,7 @@ export class CapacitorHealthkitWeb
   }
 
   async queryHKitSampleTypeStatisticsCollection(
-    _queryOptions: Omit<SingleQueryOptions, 'limit'>,
+    _queryOptions: StatisticsCollectionQueryOptions,
   ): Promise<any> {
     throw this.unimplemented('Not implemented on web.');
   }

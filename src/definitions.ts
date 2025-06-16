@@ -26,7 +26,7 @@ export interface CapacitorHealthkitPlugin {
    * @param queryOptions defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results.
    */
   queryHKitSampleTypeStatisticsCollection<T>(
-    queryOptions: Omit<SingleQueryOptions, "limit">,
+    queryOptions: StatisticsCollectionQueryOptions,
   ): Promise<QueryOutput<T>>;
   /**
    * Checks if there is writing permission for one specific sample type. This function has not been tested.
@@ -120,6 +120,17 @@ export interface SingleQueryOptions extends BaseQueryOptions {
  */
 export interface MultipleQueryOptions extends BaseQueryOptions {
   sampleNames: string[];
+}
+
+/**
+ * This extends the Basequeryoptions for a single sample type.
+ */
+export interface StatisticsCollectionQueryOptions
+  extends Omit<BaseQueryOptions, 'limit'> {
+  sampleName: string;
+
+  /** Interval in minutes. */
+  interval: number;
 }
 
 /**

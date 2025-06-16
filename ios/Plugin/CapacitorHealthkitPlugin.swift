@@ -735,8 +735,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
   }
 
   // Will return a collection of samples in the given interval in minutes.
+  // TODO: Clean up and put in smaller methods.
   @available(iOS 15.4, *)
-  @objc func queryHKitSampleTypeStatisticsCollection(_ call: CAPPluginCall) async {
+  @objc func queryHKitSampleTypeStatisticsCollection(_ call: CAPPluginCall) {
     guard let _sampleName = call.options["sampleName"] as? String else {
       return call.reject("Must provide sampleName")
     }
@@ -751,8 +752,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
       return call.reject("Must provide interval")
     }
 
-    print("!!! Called !!!")
-
     let _startDate = getDateFromString(inputDate: startDateString)
     let _endDate = getDateFromString(inputDate: endDateString)
 
@@ -761,63 +760,84 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     }
 
     let timeRange = HKQuery.predicateForSamples(
-      withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate)
+      withStart: _startDate,
+      end: _endDate,
+      options: HKQueryOptions.strictStartDate
+    )
 
-    let predicate = HKSamplePredicate.quantitySample(type: sampleType, predicate: timeRange)
-
-    let query = HKStatisticsCollectionQueryDescriptor(
-      predicate: predicate,
+    let query = HKStatisticsCollectionQuery(
+      quantityType: sampleType,
+      quantitySamplePredicate: timeRange,
       options: .discreteAverage,
       anchorDate: _endDate,
       intervalComponents: DateComponents(minute: interval)
     )
 
-    do {
-      let results = try await query.result(for: healthStore)
+    query.initialResultsHandler = {
+      _, results, error in
 
-      var output: [[String: Any]] = []
+      if let error = error as? HKError {
+        return
+      }
 
-      for sample in results.statistics() {
-        var unit: HKUnit?
-        var unitName: String?
-
-        if sample.quantityType.is(
-          compatibleWith: HKUnit.decibelAWeightedSoundPressureLevel())
-        {
-          unit = HKUnit.decibelAWeightedSoundPressureLevel()
-          unitName = "dBASPL"
-        } else {
-          print("Error: unknown unit type")
-        }
-
-        let quantitySD = sample.startDate as NSDate
-        let quantityED = sample.endDate as NSDate
-        let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
-        let quantitySecondsInAnHour: Double = 3600
-        let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
-
-        output.append([
-          "uuid": sample.uuid.uuidString,
-          "value": sample.quantity.doubleValue(for: unit!),
-          "unitName": unitName!,
-          "startDate": ISO8601DateFormatter().string(from: sample.startDate),
-          "endDate": ISO8601DateFormatter().string(from: sample.endDate),
-          "duration": quantityHoursBetweenDates,
-          "source": sample.sourceRevision.source.name,
-          "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
-          "device": getDeviceInformation(device: sample.device),
-        ])
+      guard
+        let output: [[String: Any]] = self.generateStatisticsCollectionOutput(
+          sampleName: _sampleName, results: results)
+      else {
+        return call.reject("Error happened while generating outputs")
       }
 
       call.resolve([
         "countReturn": output.count,
         "resultData": output,
       ])
-
-    } catch {
-      //handle error
-      print(error)
     }
+
+    healthStore.execute(query)
   }
 
+  func generateStatisticsCollectionOutput(
+    sampleName: String,
+    results: HKStatisticsCollection?
+  ) -> [[String: Any]]? {
+    var output: [[String: Any]] = []
+
+    if results == nil {
+      return output
+    }
+
+    for sample in results!.statistics() {
+      var unit: HKUnit?
+      var unitName: String?
+
+      if sample.quantityType.is(
+        compatibleWith: HKUnit.decibelAWeightedSoundPressureLevel())
+      {
+        unit = HKUnit.decibelAWeightedSoundPressureLevel()
+        unitName = "dBASPL"
+      } else {
+        print("Error: unsupported unit type")
+      }
+
+      let quantitySD = sample.startDate as NSDate
+      let quantityED = sample.endDate as NSDate
+      let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
+      let quantitySecondsInAnHour: Double = 3600
+      let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
+
+      if let quantity = sample.averageQuantity() {
+        let value = quantity.doubleValue(for: unit!)
+
+        output.append([
+          "value": value,
+          "unitName": unitName!,
+          "startDate": ISO8601DateFormatter().string(from: sample.startDate),
+          "endDate": ISO8601DateFormatter().string(from: sample.endDate),
+          "duration": quantityHoursBetweenDates,
+        ])
+      }
+    }
+
+    return output
+  }
 }
