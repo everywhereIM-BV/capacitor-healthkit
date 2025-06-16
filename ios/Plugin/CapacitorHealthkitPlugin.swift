@@ -777,11 +777,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
 
       var output: [[String: Any]] = []
 
-      for result in results.statistics() {
-        guard let sample = result as? HKQuantitySample else {
-          return nil
-        }
-
+      for sample in results.statistics() {
         var unit: HKUnit?
         var unitName: String?
 

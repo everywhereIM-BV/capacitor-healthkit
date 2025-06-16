@@ -1,6 +1,6 @@
 {
-  "name": "@everywhereIM-BV/capacitor-healthkit",
-  "version": "1.4.0",
+  "name": "@everywhereim-bv/capacitor-healthkit",
+  "version": "1.4.1",
   "description": "Capacitor plugin to read data from and write data to Apple Health",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
