@@ -111,7 +111,6 @@ And you're all set ! :+1:
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
 * [`multipleIsEditionAuthorized(...)`](#multipleiseditionauthorized)
 * [Interfaces](#interfaces)
-* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -181,14 +180,14 @@ This defines a query to the Healthkit for a single type of data. This function h
 ### queryHKitSampleTypeStatisticsCollection(...)
 
 ```typescript
-queryHKitSampleTypeStatisticsCollection<T>(queryOptions: Omit<SingleQueryOptions, "limit">) => Promise<QueryOutput<T>>
+queryHKitSampleTypeStatisticsCollection<T>(queryOptions: StatisticsCollectionQueryOptions) => Promise<QueryOutput<T>>
 ```
 
 This defines a query to the Healthkit for a single type of data.
 
-| Param              | Type                                                                                                       | Description                                                                                                            |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#omit">Omit</a>&lt;<a href="#singlequeryoptions">SingleQueryOptions</a>, 'limit'&gt;</code> | defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results. |
+| Param              | Type                                                                                          | Description                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **`queryOptions`** | <code><a href="#statisticscollectionqueryoptions">StatisticsCollectionQueryOptions</a></code> | defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results. |
 
 **Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;T&gt;&gt;</code>
 
@@ -267,6 +266,16 @@ This extends the Basequeryoptions for a multiple sample types.
 | **`sampleNames`** | <code>string[]</code> |
 
 
+#### StatisticsCollectionQueryOptions
+
+This extends the Basequeryoptions for a single sample type.
+
+| Prop             | Type                | Description          |
+| ---------------- | ------------------- | -------------------- |
+| **`sampleName`** | <code>string</code> |                      |
+| **`interval`**   | <code>number</code> | Interval in minutes. |
+
+
 #### EditionQuery
 
 This is used for checking writing permissions.
@@ -283,30 +292,6 @@ This is used for checking writing permissions.
 | Prop              | Type                  |
 | ----------------- | --------------------- |
 | **`sampleNames`** | <code>string[]</code> |
-
-
-### Type Aliases
-
-
-#### Omit
-
-Construct a type with the properties of T except for those in type K.
-
-<code><a href="#pick">Pick</a>&lt;T, <a href="#exclude">Exclude</a>&lt;keyof T, K&gt;&gt;</code>
-
-
-#### Pick
-
-From T, pick a set of properties whose keys are in the union K
-
-<code>{ [P in K]: T[P]; }</code>
-
-
-#### Exclude
-
-<a href="#exclude">Exclude</a> from T those types that are assignable to U
-
-<code>T extends U ? never : T</code>
 
 </docgen-api>
 

@@ -735,7 +735,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
   }
 
   // Will return a collection of samples in the given interval in minutes.
-  // TODO: Clean up and put in smaller methods.
   @available(iOS 15.4, *)
   @objc func queryHKitSampleTypeStatisticsCollection(_ call: CAPPluginCall) {
     guard let _sampleName = call.options["sampleName"] as? String else {
