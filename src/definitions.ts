@@ -6,6 +6,10 @@ export interface CapacitorHealthkitPlugin {
    */
   requestAuthorization(authOptions: AuthorizationQueryOptions): Promise<void>;
   /**
+   * This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
+   */
+  isAvailable(): Promise<void>;
+  /**
    * This defines a query to the Healthkit for a single type of data.
    * @param queryOptions defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results.
    */
@@ -13,14 +17,17 @@ export interface CapacitorHealthkitPlugin {
     queryOptions: SingleQueryOptions,
   ): Promise<QueryOutput<T>>;
   /**
-   * This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
-   */
-  isAvailable(): Promise<void>;
-  /**
    * This defines a query to the Healthkit for a single type of data. This function has not been tested.
    * @param queryOptions defines the sample types which can be queried for
    */
   multipleQueryHKitSampleType(queryOptions: MultipleQueryOptions): Promise<any>;
+  /**
+   * This defines a query to the Healthkit for a single type of data.
+   * @param queryOptions defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results.
+   */
+  queryHKitSampleTypeStatisticsCollection<T>(
+    queryOptions: Omit<SingleQueryOptions, "limit">,
+  ): Promise<QueryOutput<T>>;
   /**
    * Checks if there is writing permission for one specific sample type. This function has not been tested.
    * @param queryOptions defines the sampletype for which you need to check for writing permission.

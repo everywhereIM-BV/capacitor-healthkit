@@ -734,7 +734,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     healthStore.execute(query)
   }
 
-  // Will return a collection of samples in the given *hourly* interval.
+  // Will return a collection of samples in the given interval in minutes.
   @available(iOS 15.4, *)
   @objc func queryHKitSampleTypeStatisticsCollection(_ call: CAPPluginCall) async {
     guard let _sampleName = call.options["sampleName"] as? String else {
@@ -746,7 +746,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     guard let endDateString = call.options["endDate"] as? String else {
       return call.reject("Must provide endDate")
     }
-    // Is currently always an hour.
+    // Is currently always a minute.
     guard let interval = call.options["interval"] as? Int else {
       return call.reject("Must provide interval")
     }
@@ -769,23 +769,38 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
       predicate: predicate,
       options: .discreteAverage,
       anchorDate: _endDate,
-      intervalComponents: DateComponents(hour: interval)
+      intervalComponents: DateComponents(minute: interval)
     )
 
     do {
       let results = try await query.result(for: healthStore)
 
-      let statistics = results.statistics()
+      var output: [[String: Any]] = []
 
-      for result in statistics {
-
+      for result in results.statistics() {
         guard let sample = result as? HKQuantitySample else {
           return nil
         }
+
         var unit: HKUnit?
         var unitName: String?
 
-        let output: [[String: Any]] = [
+        if sample.quantityType.is(
+          compatibleWith: HKUnit.decibelAWeightedSoundPressureLevel())
+        {
+          unit = HKUnit.decibelAWeightedSoundPressureLevel()
+          unitName = "dBASPL"
+        } else {
+          print("Error: unknown unit type")
+        }
+
+        let quantitySD = sample.startDate as NSDate
+        let quantityED = sample.endDate as NSDate
+        let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
+        let quantitySecondsInAnHour: Double = 3600
+        let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
+
+        output.append([
           "uuid": sample.uuid.uuidString,
           "value": sample.quantity.doubleValue(for: unit!),
           "unitName": unitName!,
@@ -795,37 +810,18 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
           "source": sample.sourceRevision.source.name,
           "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
           "device": getDeviceInformation(device: sample.device),
-        ]
-
-        call.resolve([
-          "countReturn": output.count,
-          "resultData": output,
         ])
       }
+
+      call.resolve([
+        "countReturn": output.count,
+        "resultData": output,
+      ])
 
     } catch {
       //handle error
       print(error)
     }
-
-    // if sample.quantityType.is(
-    //   compatibleWith: HKUnit.decibelAWeightedSoundPressureLevel())
-    // {
-    //   unit = HKUnit.decibelAWeightedSoundPressureLevel()
-    //   unitName = "dBASPL"
-    // } else {
-    //   print("Error: unknown unit type")
-    // }
-
-    // var value: Double
-    // let quantitySD: NSDate
-    // let quantityED: NSDate
-    // quantitySD = sample.startDate as NSDate
-    // quantityED = sample.endDate as NSDate
-    // let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
-    // let quantitySecondsInAnHour: Double = 3600
-    // let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
-
   }
 
 }
