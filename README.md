@@ -44,31 +44,26 @@ And **if you use Ionic or Angular, here a example setup:**
 
 in your .ts file add this:
 
-```
+```ts
 import {
   ActivityData,
   CapacitorHealthkit,
   OtherData,
   QueryOutput,
   SampleNames,
-  SleepData,
 } from '@everywhereIM-BV/capacitor-healthkit';
 
-const READ_PERMISSIONS = ['calories', 'stairs', 'activity', 'steps', 'distance', 'duration', 'weight'];
+const READ_PERMISSIONS = ['headphoneAudioExposure'];
 
 ```
 
 and then you can create async functions like this:
 
-```
-
-
+```ts
   public async requestAuthorization(): Promise<void> {
     try {
       await CapacitorHealthkit.requestAuthorization({
-        all: [''],
         read: READ_PERMISSIONS,
-        write: [''],
       });
 
     } catch (error) {
@@ -79,16 +74,20 @@ and then you can create async functions like this:
   private async getActivityData(
     startDate: Date,
     endDate: Date = new Date(),
-  ): Promise<QueryOutput<ActivityData>> | undefined {
+  ): Promise<StatisticsCollectionOutput> | undefined {
     try {
       const queryOptions = {
-        sampleName: SampleNames.WORKOUT_TYPE,
+        quantityTypeSampleName: 'headphoneAudioExposure',
+        anchorDate: endDate.toISOString(),
         startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        limit: 0,
+        endDate: endDate.toISOString(), // Optional
+        interval: {
+          unit: 'second',
+          value: 1,
+        }
       };
 
-      return await CapacitorHealthkit.queryHKitSampleType<ActivityData>(queryOptions);
+      return await CapacitorHealthkit.getStatisticsCollection(queryOptions);
     } catch (error) {
       console.error(error);
 
@@ -97,20 +96,16 @@ and then you can create async functions like this:
   }
 ```
 
-so you can use the plugin for example with the call `CapacitorHealthkit.queryHKitSampleType(...`
-
-And you're all set ! :+1:
+## API
 
 <docgen-index>
 
 * [`requestAuthorization(...)`](#requestauthorization)
 * [`isAvailable()`](#isavailable)
-* [`queryHKitSampleType(...)`](#queryhkitsampletype)
-* [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
-* [`queryHKitSampleTypeStatisticsCollection(...)`](#queryhkitsampletypestatisticscollection)
-* [`isEditionAuthorized(...)`](#iseditionauthorized)
-* [`multipleIsEditionAuthorized(...)`](#multipleiseditionauthorized)
+* [`getAuthorizationStatus(...)`](#getauthorizationstatus)
+* [`getStatisticsCollection(...)`](#getstatisticscollection)
 * [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -120,14 +115,12 @@ And you're all set ! :+1:
 ### requestAuthorization(...)
 
 ```typescript
-requestAuthorization(authOptions: AuthorizationQueryOptions) => Promise<void>
+requestAuthorization(options: RequestAuthorizationOptions) => Promise<void>
 ```
 
-This functions will open the iOS Screen to let users choose their permissions. Keep in mind as developers, if the access has been denied by the user we will have no way of knowing - the query results will instead just be empty arrays.
-
-| Param             | Type                                                                            | Description                                                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`authOptions`** | <code><a href="#authorizationqueryoptions">AuthorizationQueryOptions</a></code> | These define which access we need. Possible Options include ['calories', 'stairs', 'activity', 'steps', 'distance', 'duration', 'weight']. |
+| Param         | Type                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#requestauthorizationoptions">RequestAuthorizationOptions</a></code> |
 
 --------------------
 
@@ -138,88 +131,35 @@ This functions will open the iOS Screen to let users choose their permissions. K
 isAvailable() => Promise<void>
 ```
 
-This functions resolves if HealthKitData is available it uses the native HKHealthStore.isHealthDataAvailable() funtion of the HealthKit .
+--------------------
+
+
+### getAuthorizationStatus(...)
+
+```typescript
+getAuthorizationStatus(options: GetAuthorizationStatusOptions) => Promise<{ status: AuthorizationStatus; }>
+```
+
+| Param         | Type                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#getauthorizationstatusoptions">GetAuthorizationStatusOptions</a></code> |
+
+**Returns:** <code>Promise&lt;{ status: <a href="#authorizationstatus">AuthorizationStatus</a>; }&gt;</code>
 
 --------------------
 
 
-### queryHKitSampleType(...)
+### getStatisticsCollection(...)
 
 ```typescript
-queryHKitSampleType<T>(queryOptions: SingleQueryOptions) => Promise<QueryOutput<T>>
+getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<StatisticsCollectionOutput>
 ```
 
-This defines a query to the Healthkit for a single type of data.
+| Param         | Type                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#statisticscollectionoptions">StatisticsCollectionOptions</a></code> |
 
-| Param              | Type                                                              | Description                                                                                                            |
-| ------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#singlequeryoptions">SingleQueryOptions</a></code> | defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results. |
-
-**Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;T&gt;&gt;</code>
-
---------------------
-
-
-### multipleQueryHKitSampleType(...)
-
-```typescript
-multipleQueryHKitSampleType(queryOptions: MultipleQueryOptions) => Promise<any>
-```
-
-This defines a query to the Healthkit for a single type of data. This function has not been tested.
-
-| Param              | Type                                                                  | Description                                       |
-| ------------------ | --------------------------------------------------------------------- | ------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#multiplequeryoptions">MultipleQueryOptions</a></code> | defines the sample types which can be queried for |
-
-**Returns:** <code>Promise&lt;any&gt;</code>
-
---------------------
-
-
-### queryHKitSampleTypeStatisticsCollection(...)
-
-```typescript
-queryHKitSampleTypeStatisticsCollection<T>(queryOptions: StatisticsCollectionQueryOptions) => Promise<QueryOutput<T>>
-```
-
-This defines a query to the Healthkit for a single type of data.
-
-| Param              | Type                                                                                          | Description                                                                                                            |
-| ------------------ | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#statisticscollectionqueryoptions">StatisticsCollectionQueryOptions</a></code> | defines the type of data and the timeframe which shall be queried, a limit can be set to reduce the number of results. |
-
-**Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;T&gt;&gt;</code>
-
---------------------
-
-
-### isEditionAuthorized(...)
-
-```typescript
-isEditionAuthorized(queryOptions: EditionQuery) => Promise<void>
-```
-
-Checks if there is writing permission for one specific sample type. This function has not been tested.
-
-| Param              | Type                                                  | Description                                                                |
-| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#editionquery">EditionQuery</a></code> | defines the sampletype for which you need to check for writing permission. |
-
---------------------
-
-
-### multipleIsEditionAuthorized(...)
-
-```typescript
-multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery) => Promise<void>
-```
-
-Checks if there is writing permission for multiple sample types. This function has not been tested.
-
-| Param              | Type                                                                  | Description                                                                 |
-| ------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **`queryOptions`** | <code><a href="#multipleeditionquery">MultipleEditionQuery</a></code> | defines the sampletypes for which you need to check for writing permission. |
+**Returns:** <code>Promise&lt;<a href="#statisticscollectionoutput">StatisticsCollectionOutput</a>&gt;</code>
 
 --------------------
 
@@ -227,79 +167,72 @@ Checks if there is writing permission for multiple sample types. This function h
 ### Interfaces
 
 
-#### AuthorizationQueryOptions
-
-Used for authorization of reading and writing access.
+#### RequestAuthorizationOptions
 
 | Prop        | Type                  |
 | ----------- | --------------------- |
+| **`all`**   | <code>string[]</code> |
 | **`read`**  | <code>string[]</code> |
 | **`write`** | <code>string[]</code> |
-| **`all`**   | <code>string[]</code> |
 
 
-#### QueryOutput
-
-This interface is used for any results coming from HealthKit. It always has a count and the actual results.
-
-| Prop              | Type                |
-| ----------------- | ------------------- |
-| **`countReturn`** | <code>number</code> |
-| **`resultData`**  | <code>T[]</code>    |
-
-
-#### SingleQueryOptions
-
-This extends the Basequeryoptions for a single sample type.
+#### GetAuthorizationStatusOptions
 
 | Prop             | Type                |
 | ---------------- | ------------------- |
-| **`sampleName`** | <code>string</code> |
+| **`sampleType`** | <code>string</code> |
 
 
-#### MultipleQueryOptions
+#### StatisticsCollectionOutput
 
-This extends the Basequeryoptions for a multiple sample types.
-
-| Prop              | Type                  |
-| ----------------- | --------------------- |
-| **`sampleNames`** | <code>string[]</code> |
+| Prop       | Type                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| **`data`** | <code>{ startDate: string; endDate: string; value: number; }[]</code> |
 
 
-#### StatisticsCollectionQueryOptions
+#### StatisticsCollectionOptions
 
-This extends the Basequeryoptions for a single sample type.
-
-| Prop             | Type                | Description          |
-| ---------------- | ------------------- | -------------------- |
-| **`sampleName`** | <code>string</code> |                      |
-| **`interval`**   | <code>number</code> | Interval in minutes. |
-
-
-#### EditionQuery
-
-This is used for checking writing permissions.
-
-| Prop             | Type                |
-| ---------------- | ------------------- |
-| **`sampleName`** | <code>string</code> |
+| Prop                         | Type                                                                                            |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| **`startDate`**              | <code>string</code>                                                                             |
+| **`endDate`**                | <code>string</code>                                                                             |
+| **`anchorDate`**             | <code>string</code>                                                                             |
+| **`interval`**               | <code><a href="#statisticscollectionqueryinterval">StatisticsCollectionQueryInterval</a></code> |
+| **`quantityTypeSampleName`** | <code><a href="#quantitytype">QuantityType</a></code>                                           |
 
 
-#### MultipleEditionQuery
+#### StatisticsCollectionQueryInterval
 
-This is used for checking writing permissions.
+| Prop        | Type                                                                      |
+| ----------- | ------------------------------------------------------------------------- |
+| **`unit`**  | <code>'second' \| 'minute' \| 'hour' \| 'day' \| 'month' \| 'year'</code> |
+| **`value`** | <code>number</code>                                                       |
 
-| Prop              | Type                  |
-| ----------------- | --------------------- |
-| **`sampleNames`** | <code>string[]</code> |
+
+#### HealthKitDevice
+
+| Prop                      | Type                |
+| ------------------------- | ------------------- |
+| **`name`**                | <code>string</code> |
+| **`model`**               | <code>string</code> |
+| **`manufacturer`**        | <code>string</code> |
+| **`hardwareVersion`**     | <code>string</code> |
+| **`softwareVersion`**     | <code>string</code> |
+| **`firmwareVersion`**     | <code>string</code> |
+| **`localIdentifier`**     | <code>string</code> |
+| **`udiDeviceIdentifier`** | <code>string</code> |
+
+
+### Type Aliases
+
+
+#### AuthorizationStatus
+
+<code>'notDetermined' | 'sharingDenied' | 'sharingAuthorized'</code>
+
+
+#### QuantityType
+
+<code>'headphoneAudioExposure'</code>
 
 </docgen-api>
-
-## Credits
-
-- Theo Creach (original author) - [Twitter](https://twitter.com/crcht)
-- Timothée Bilodeau - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
-
-## License
-
-This project is licensed under the MIT License

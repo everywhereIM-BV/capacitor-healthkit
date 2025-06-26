@@ -1,49 +1,39 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WebPlugin } from '@capacitor/core';
 
 import type {
-  EditionQuery,
-  AuthorizationQueryOptions,
+  AuthorizationStatus,
   CapacitorHealthkitPlugin,
-  MultipleQueryOptions,
-  SingleQueryOptions,
-  StatisticsCollectionQueryOptions,
+  GetAuthorizationStatusOptions,
+  StatisticsCollectionOptions,
+  StatisticsCollectionOutput,
 } from './definitions';
 
 export class CapacitorHealthkitWeb
   extends WebPlugin
   implements CapacitorHealthkitPlugin {
-  async requestAuthorization(
-    _authOptions: AuthorizationQueryOptions,
-  ): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async echo(): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 
-  async queryHKitSampleType(_queryOptions: SingleQueryOptions): Promise<any> {
-    throw this.unimplemented('Not implemented on web.');
+  async requestAuthorization(): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 
   async isAvailable(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+    throw new Error('Method not implemented.');
   }
 
-  async multipleQueryHKitSampleType(
-    _queryOptions: MultipleQueryOptions,
-  ): Promise<any> {
-    throw this.unimplemented('Not implemented on web.');
+  async getAuthorizationStatus(
+    options: GetAuthorizationStatusOptions,
+  ): Promise<{ status: AuthorizationStatus }> {
+    console.log({ options });
+    throw new Error('Method not implemented.');
   }
 
-  async queryHKitSampleTypeStatisticsCollection(
-    _queryOptions: StatisticsCollectionQueryOptions,
-  ): Promise<any> {
-    throw this.unimplemented('Not implemented on web.');
-  }
-
-  async isEditionAuthorized(_queryOptions: EditionQuery): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
-  }
-
-  async multipleIsEditionAuthorized(): Promise<void> {
-    throw this.unimplemented('Not implemented on web.');
+  async getStatisticsCollection(
+    options: StatisticsCollectionOptions,
+  ): Promise<StatisticsCollectionOutput> {
+    console.log({ options });
+    throw new Error('Method not implemented.');
   }
 }
