@@ -46,11 +46,8 @@ in your .ts file add this:
 
 ```ts
 import {
-  ActivityData,
   CapacitorHealthkit,
-  OtherData,
-  QueryOutput,
-  SampleNames,
+  StatisticsCollectionOutput,
 } from '@everywhereIM-BV/capacitor-healthkit';
 
 const READ_PERMISSIONS = ['headphoneAudioExposure'];
