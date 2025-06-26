@@ -769,7 +769,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
       quantitySamplePredicate: timeRange,
       options: .discreteAverage,
       anchorDate: _endDate,
-      intervalComponents: DateComponents(minute: interval)
+      intervalComponents: DateComponents(second: interval)
     )
 
     query.initialResultsHandler = {
