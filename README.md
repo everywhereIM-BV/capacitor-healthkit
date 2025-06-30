@@ -206,20 +206,6 @@ getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<Statist
 | **`value`** | <code>number</code>                                                       |
 
 
-#### HealthKitDevice
-
-| Prop                      | Type                |
-| ------------------------- | ------------------- |
-| **`name`**                | <code>string</code> |
-| **`model`**               | <code>string</code> |
-| **`manufacturer`**        | <code>string</code> |
-| **`hardwareVersion`**     | <code>string</code> |
-| **`softwareVersion`**     | <code>string</code> |
-| **`firmwareVersion`**     | <code>string</code> |
-| **`localIdentifier`**     | <code>string</code> |
-| **`udiDeviceIdentifier`** | <code>string</code> |
-
-
 ### Type Aliases
 
 
