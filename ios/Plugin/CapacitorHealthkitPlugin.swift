@@ -143,7 +143,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
           let endDate = statistics.endDate
           let value =
             quantity != nil
-            ? quantity!.doubleValue(for: HKUnit.decibelAWeightedSoundPressureLevel())
+            ? quantity.doubleValue(for: HKUnit.decibelAWeightedSoundPressureLevel())
             : nil
 
           output.append([
